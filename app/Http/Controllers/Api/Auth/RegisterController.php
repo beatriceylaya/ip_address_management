@@ -23,7 +23,7 @@ class RegisterController extends Controller
 
         $user->assignRole(RolesEnum::USER);
 
-        $token = Auth::guard('api')->login($user);
+        $token = Auth::login($user);
 
         return response()->json([
             'message' => 'User registered successfully',
