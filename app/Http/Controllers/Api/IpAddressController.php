@@ -45,6 +45,7 @@ class IpAddressController extends Controller
      */
     public function update(UpdateIpRequest $request, IpAddress $ipAddress)
     {
+        $this->authorize('update', $ipAddress);
         $ipAddress->update($request->validated());
 
         return response()->json($ipAddress, 200);
@@ -55,6 +56,7 @@ class IpAddressController extends Controller
      */
     public function destroy(IpAddress $ipAddress)
     {
+        $this->authorize('delete', $ipAddress);
         $ipAddress->delete();
 
         return response()->json(null, 204);

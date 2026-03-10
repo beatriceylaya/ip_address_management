@@ -41,8 +41,10 @@ class AuthController extends Controller
 
     public function refresh()
     {
+        /** @var \PHPOpenSourceSaver\JWTAuth\JWTGuard $guard */
+        $guard = Auth::guard('api');
         return response()->json([
-            'access_token' => Auth::guard('api')->refresh(),
+            'access_token' => $guard->refresh(),
             'token_type' => 'bearer',
         ]);
     }
