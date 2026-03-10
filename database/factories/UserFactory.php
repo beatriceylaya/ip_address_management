@@ -2,9 +2,14 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
+use App\RolesEnum;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Spatie\Permission\Models\Role;
+
+use function Illuminate\Support\enum_value;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
@@ -40,5 +45,25 @@ class UserFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
         ]);
+    }
+
+    protected function assignRoleToUser(User $user, RolesEnum $roleEnum): void
+    {
+        $role = Role::firstOrCreate(['name' => enum_value($roleEnum)]);
+        $user->syncRoles([$role]);
+    }
+
+    public function configure(): static
+    {
+        return $this->afterCreating(function (User $user) {
+            $this->assignRoleToUser($user, RolesEnum::USER);
+        });
+    }
+
+    public function superAdmin(): static
+    {
+        return $this->afterCreating(function (User $user) {
+            $this->assignRoleToUser($user, RolesEnum::SUPER_ADMIN);
+        });
     }
 }

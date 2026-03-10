@@ -16,7 +16,7 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        Role::create(['name' => enum_value(RolesEnum::SUPER_ADMIN)]);
-        Role::create(['name' => enum_value(RolesEnum::USER)]);
+        Role::firstOrCreate(['name' => enum_value(RolesEnum::SUPER_ADMIN)]);
+        Role::firstOrCreate(['name' => enum_value(RolesEnum::USER)]);
     }
 }
