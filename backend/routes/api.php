@@ -17,6 +17,6 @@ Route::prefix('auth')->group(function () {
     });
 });
 
-Route::middleware('auth:api')->group(function () {
+Route::middleware(['auth:api', 'setAuditLog'])->group(function () {
     Route::apiResource('ip-addresses', IpAddressController::class);
 });
