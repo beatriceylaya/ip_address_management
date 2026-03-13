@@ -1,20 +1,16 @@
-import type { App } from 'vue'
-import axios, { type AxiosInstance } from 'axios'
+import axios from 'axios'
 
-declare module '@vue/runtime-core' {
-  interface ComponentCustomProperties {
-      $axios: AxiosInstance
-  }
-}
+export const axiosInstance = axios.create({
+  baseURL: import.meta.env.VITE_API_URL
+})
 
-export default {
-  install: (app: App, options?: { baseURL: string }) => {
-    const instance = axios.create({
-        baseURL: options?.baseURL || import.meta.env.VITE_API_URL,
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    })
-    app.config.globalProperties.$axios = instance
+axiosInstance.interceptors.request.use((config) => {
+
+  const token = localStorage.getItem('token')
+
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
   }
-}
+
+  return config
+})
