@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreIpRequest;
 use App\Http\Requests\UpdateIpRequest;
+use App\Http\Resources\IpAddressResource;
 use App\Models\IpAddress;
 use Illuminate\Http\Request;
 
@@ -13,11 +14,11 @@ class IpAddressController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $ipAddresses = IpAddress::all();
+        $ipAddresses = IpAddress::paginate($request->input('per_page', 10));
 
-        return response()->json($ipAddresses);
+        return IpAddressResource::collection($ipAddresses);
     }
 
     /**
