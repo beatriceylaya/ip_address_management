@@ -1,25 +1,44 @@
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
-import { loginApi, type LoginPayload } from '@/modules/auth/authApi'
+import type { AuthUser } from '@/types/auth'
+import { authService } from '@/services/authService'
 
 export const useAuthStore = defineStore('auth', () => {
+  const accessToken = ref<string | null>(null)
+  const refreshToken = ref<string | null>(null)
+  const user = ref<AuthUser | null>(null)
 
-  const token = ref(localStorage.getItem('token'))
+  const isAuthenticated = computed(() => !!accessToken.value)
 
-  const isAuthenticated = computed(() => !!token.value)
+  function setTokens(access: string, refresh: string) {
+    accessToken.value = access
+    refreshToken.value = refresh ?? null
+  }
 
-  const login = async (payload: LoginPayload) => {
-    const res = await loginApi(payload)
-    console.log(res)
-    token.value = res.data.access_token
+  function setUser(u: AuthUser) {
+    user.value = u
+  }
 
-    localStorage.setItem('token', res.data.access_token)
+  async function refresh(): Promise<string> {
+    if (!refreshToken.value) throw new Error('No refresh token')
+    const { data } = await authService.refresh(refreshToken.value)
+    accessToken.value = data.access_token
+    return data.access_token
+  }
+
+  function logout() {
+    accessToken.value = null
+    refreshToken.value = null
+    user.value = null
   }
 
   return {
-    token,
+    accessToken, refreshToken, user,
     isAuthenticated,
-    login
+    setTokens, setUser, refresh, logout
   }
-
-})
+}, {
+  persist: {
+    paths: ['accessToken', 'refreshToken'],
+  },
+} as any)

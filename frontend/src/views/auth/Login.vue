@@ -6,8 +6,7 @@ import Button from '@/components/common/Button.vue'
 import Input from '@/components/common/Input.vue'
 import FormGroup from '@/components/form/FormGroup.vue'
 import PageContainer from '@/layouts/PageContainer.vue'
-import { useAuth } from '@/composables/useAxios'
-import { useRouter } from 'vue-router'
+import { useAuth } from '@/composables/useAuth'
 
 interface LoginForm {
   email: string
@@ -19,14 +18,11 @@ const form = reactive<LoginForm>({
   password: ''
 })
 
-const { login } = useAuth()
-const router = useRouter()
+const { login, loading, error } = useAuth()
 
-const submit = async () => {
-  await login({
-    email: form.email,
-    password: form.password
-  })
+
+async function submit() {
+  await login(form)
 }
 </script>
 
@@ -47,8 +43,9 @@ const submit = async () => {
           <Input v-model="form.password" type="password" />
         </FormGroup>
 
+        <p v-if="error" class="error">{{ error }}</p>
         <Button type="submit" class="w-full">
-          Login
+          {{ loading ? 'Logging in...' : 'Login' }}
         </Button>
 
       </form>
