@@ -7,6 +7,7 @@ import Input from '@/components/common/Input.vue'
 import FormGroup from '@/components/form/FormGroup.vue'
 import PageContainer from '@/layouts/PageContainer.vue'
 import { useAuth } from '@/composables/useAuth'
+import AuthLayout from '@/layouts/AuthLayout.vue'
 
 interface LoginForm {
   email: string
@@ -27,28 +28,30 @@ async function submit() {
 </script>
 
 <template>
-  <PageContainer>
-    <Card class="max-w-md mx-auto">
-        <h2 class="text-xl font-semibold text-center">
-          Login
-        </h2>
+  <AuthLayout>
+    <PageContainer>
+      <Card class="max-w-md mx-auto">
+          <h2 class="text-xl font-semibold text-center">
+            Login
+          </h2>
 
-      <form class="space-y-4" @submit.prevent="submit">
+        <form class="space-y-4" @submit.prevent="submit">
 
-        <FormGroup label="Email">
-          <Input v-model="form.email" type="email" />
-        </FormGroup>
+          <FormGroup label="Email">
+            <Input v-model="form.email" type="email" />
+          </FormGroup>
 
-        <FormGroup label="Password">
-          <Input v-model="form.password" type="password" />
-        </FormGroup>
+          <FormGroup label="Password">
+            <Input v-model="form.password" type="password" />
+          </FormGroup>
 
-        <p v-if="error" class="error">{{ error }}</p>
-        <Button type="submit" class="w-full">
-          {{ loading ? 'Logging in...' : 'Login' }}
-        </Button>
+          <p v-if="error" class="error">{{ error }}</p>
+          <Button type="submit" class="w-full">
+            {{ loading ? 'Logging in...' : 'Login' }}
+          </Button>
 
-      </form>
-    </Card>
-  </PageContainer>
+        </form>
+      </Card>
+    </PageContainer>
+  </AuthLayout>
 </template>
