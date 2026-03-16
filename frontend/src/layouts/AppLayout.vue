@@ -3,7 +3,7 @@
 
     <Sidebar />
     <div class="flex-1 flex flex-col">
-      <Navbar />
+      <Navbar :name="user?.name ?? ''" />
       <main class="flex-1 p-6">
         <slot />
       </main>
@@ -11,7 +11,10 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import Sidebar from './Sidebar.vue'
 import Navbar from './Navbar.vue'
+import { useAuth } from '@/composables/useAuth'
+
+const { user } = useAuth()
 </script>

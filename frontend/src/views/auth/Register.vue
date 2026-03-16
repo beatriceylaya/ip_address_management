@@ -6,6 +6,7 @@ import FormGroup from '@/components/form/FormGroup.vue'
 import AuthLayout from '@/layouts/AuthLayout.vue'
 import PageContainer from '@/layouts/PageContainer.vue'
 import Button from '@/components/common/Button.vue'
+import { RouterLink } from 'vue-router'
 
 interface RegisterForm {
   name: string
@@ -48,6 +49,13 @@ async function submit () {
           <Button type="submit" class="w-full">
             Register
           </Button>
+
+          <p>
+            Already have an account?
+            <RouterLink to="/login" class="text-blue-500 hover:underline">
+              Login
+            </RouterLink>
+          </p>
         </form>
 
       </Card>

@@ -16,7 +16,10 @@ class IpAddressController extends Controller
      */
     public function index(Request $request)
     {
-        $ipAddresses = IpAddress::paginate($request->input('per_page', 10));
+        $perPage = $request->input('per_page', 10);
+
+        $ipAddresses = IpAddress::with(['user:id,name'])
+            ->paginate($perPage);
 
         return IpAddressResource::collection($ipAddresses);
     }

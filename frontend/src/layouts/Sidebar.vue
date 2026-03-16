@@ -9,7 +9,7 @@
     <nav class="p-4 space-y-2">
 
       <RouterLink
-        to="/dashboard"
+        to="/ip-addresses"
         class="block px-3 py-2 rounded hover:bg-gray-800"
       >
         IP Address

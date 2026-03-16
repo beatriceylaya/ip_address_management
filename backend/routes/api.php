@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AuditLogController;
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Auth\RegisterController;
 use App\Http\Controllers\Api\IpAddressController;
@@ -19,4 +20,5 @@ Route::prefix('auth')->group(function () {
 
 Route::middleware(['auth:api', 'setAuditLog'])->group(function () {
     Route::apiResource('ip-addresses', IpAddressController::class);
+    Route::get('/audit-logs', AuditLogController::class);
 });

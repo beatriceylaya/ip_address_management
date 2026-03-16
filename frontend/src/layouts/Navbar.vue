@@ -1,11 +1,17 @@
 <script setup lang="ts">
 import { Button } from '@/components/common'
-
+import { useAuth } from '@/composables/useAuth';
 interface Props {
-  userName?: string
+  name?: string
 }
 
 defineProps<Props>()
+
+const { logout } = useAuth()
+
+async function submit() {
+  await logout()
+}
 </script>
 
 <template>
@@ -19,10 +25,10 @@ defineProps<Props>()
     <div class="flex items-center gap-4">
 
       <span class="text-sm text-gray-600">
-        {{ userName }}
+        {{ name }}
       </span>
 
-      <Button variant="secondary">
+      <Button variant="secondary" @click.prevent="submit">
         Logout
       </Button>
 

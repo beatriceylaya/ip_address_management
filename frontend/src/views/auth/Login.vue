@@ -8,6 +8,7 @@ import FormGroup from '@/components/form/FormGroup.vue'
 import PageContainer from '@/layouts/PageContainer.vue'
 import { useAuth } from '@/composables/useAuth'
 import AuthLayout from '@/layouts/AuthLayout.vue'
+import { RouterLink } from 'vue-router'
 
 interface LoginForm {
   email: string
@@ -49,7 +50,12 @@ async function submit() {
           <Button type="submit" class="w-full">
             {{ loading ? 'Logging in...' : 'Login' }}
           </Button>
-
+          <p>
+            No account yet?
+            <RouterLink to="/register" class="text-blue-500 hover:underline">
+              Register
+            </RouterLink>
+          </p>
         </form>
       </Card>
     </PageContainer>
