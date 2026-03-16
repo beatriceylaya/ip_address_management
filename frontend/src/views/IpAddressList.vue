@@ -2,8 +2,9 @@
 import { onMounted } from 'vue'
 import { useIpAddresses } from '@/composables/useIpAddresses'
 import AppLayout from '@/layouts/AppLayout.vue'
-import DataTable from '@/components/common/DataTable.vue'
-import Button from '@/components/common/Button.vue'
+import DataTable from '@/components/common/BaseDataTable.vue'
+import Button from '@/components/common/BaseButton.vue'
+import IpAddressModal from '@/components/features/IpAddressModal.vue'
 
 const {
   ipAddresses,
@@ -24,6 +25,7 @@ const goToPage = (page: number) => {
 
 <template>
   <AppLayout>
+    <IpAddressModal />
     <DataTable
       title="Ip Addresses"
       :items="ipAddresses"

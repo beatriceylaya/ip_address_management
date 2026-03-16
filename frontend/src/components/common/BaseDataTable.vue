@@ -1,6 +1,6 @@
 <script setup lang="ts" generic="T extends { id: number }">
-import Card from '@/components/common/Card.vue'
-import Table from '@/components/common/Table.vue'
+import Card from '@/components/common/BaseCard.vue'
+import Table from '@/components/common/BaseTable.vue'
 
 interface Props {
   title: string

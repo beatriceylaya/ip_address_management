@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Login from '@/views/auth/Login.vue'
+import LoginView from '@/views/auth/LoginView.vue'
 import AppLayout from '@/layouts/AppLayout.vue'
-import Register from '@/views/auth/Register.vue'
+import RegisterView from '@/views/auth/RegisterView.vue'
 import { useAuthStore } from '@/stores/auth'
 import IpAddressList from '@/views/IpAddressList.vue'
 
@@ -17,13 +17,13 @@ const router = createRouter({
     {
       path: '/login',
       name: 'login',
-      component: Login,
+      component: LoginView,
       meta: { guest: true }
     },
     {
       path: '/register',
       name: 'register',
-      component: Register,
+      component: RegisterView,
       meta: { guest: true }
     },
     {

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { reactive } from 'vue'
 
-import Card from '@/components/common/Card.vue'
-import Button from '@/components/common/Button.vue'
-import Input from '@/components/common/Input.vue'
+import Card from '@/components/common/BaseCard.vue'
+import Button from '@/components/common/BaseButton.vue'
+import Input from '@/components/common/BaseInput.vue'
 import FormGroup from '@/components/form/FormGroup.vue'
 import PageContainer from '@/layouts/PageContainer.vue'
 import { useAuth } from '@/composables/useAuth'

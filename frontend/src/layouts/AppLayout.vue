@@ -12,8 +12,8 @@
 </template>
 
 <script setup lang="ts">
-import Sidebar from './Sidebar.vue'
-import Navbar from './Navbar.vue'
+import Sidebar from './AppSidebar.vue'
+import Navbar from './AppNavbar.vue'
 import { useAuth } from '@/composables/useAuth'
 
 const { user } = useAuth()

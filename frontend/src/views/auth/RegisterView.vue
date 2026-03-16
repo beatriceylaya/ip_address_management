@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { reactive } from 'vue'
-import Card from '@/components/common/Card.vue'
-import Input from '@/components/common/Input.vue'
+import Card from '@/components/common/BaseCard.vue'
+import Input from '@/components/common/BaseInput.vue'
 import FormGroup from '@/components/form/FormGroup.vue'
 import AuthLayout from '@/layouts/AuthLayout.vue'
 import PageContainer from '@/layouts/PageContainer.vue'
-import Button from '@/components/common/Button.vue'
+import Button from '@/components/common/BaseButton.vue'
 import { RouterLink } from 'vue-router'
 
 interface RegisterForm {
