@@ -1,18 +1,29 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useIpAddresses } from '@/composables/useIpAddresses'
 import AppLayout from '@/layouts/AppLayout.vue'
 import DataTable from '@/components/common/BaseDataTable.vue'
 import Button from '@/components/common/BaseButton.vue'
 import IpAddressModal from '@/components/features/IpAddressModal.vue'
+import type { CreateIpAddressPayload, IpAddress, UpdateIpAddressPayload } from '@/types/ip-address'
 
 const {
   ipAddresses,
   currentPage,
   totalPages,
   hasNextPage,
-  fetchAll 
+  fetchAll,
+  create,
+  update
 } = useIpAddresses()
+
+const updateModalRef = ref<InstanceType<typeof IpAddressModal> | null>(null)
+const selectedIpAddress = ref<IpAddress | null>(null)
+
+const openUpdateModal = (item: IpAddress) => {
+  selectedIpAddress.value = item
+  updateModalRef.value?.open(item)
+}
 
 onMounted(() => {
   fetchAll()
@@ -21,11 +32,28 @@ onMounted(() => {
 const goToPage = (page: number) => {
   fetchAll(page)
 }
+
+const handleCreate = async (payload: CreateIpAddressPayload) => {
+  await create(payload)
+}
+
+const handleUpdate = async (payload: CreateIpAddressPayload) => {
+  if (!selectedIpAddress.value) return
+  const updatePayload: UpdateIpAddressPayload = payload
+  await update(selectedIpAddress.value.id, updatePayload)
+  updateModalRef.value?.close()
+}
 </script>
 
 <template>
   <AppLayout>
-    <IpAddressModal />
+    <IpAddressModal @submit="handleCreate" />
+    <IpAddressModal
+      ref="updateModalRef"
+      mode="update"
+      :hideTrigger="true"
+      @submit="handleUpdate"
+    />
     <DataTable
       title="Ip Addresses"
       :items="ipAddresses"
@@ -51,7 +79,11 @@ const goToPage = (page: number) => {
         </td>
 
         <td class="px-6 py-4">
-          <Button variant="secondary" class="mr-2">
+          <Button
+            variant="secondary"
+            class="mr-2"
+            @click="openUpdateModal(item)"
+          >
             Edit
           </Button>
           <Button variant="danger">
