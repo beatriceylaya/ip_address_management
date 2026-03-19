@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 use App\RolesEnum;
 
 use function Illuminate\Support\enum_value;
@@ -16,7 +17,43 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        Role::firstOrCreate(['name' => enum_value(RolesEnum::SUPER_ADMIN)]);
-        Role::firstOrCreate(['name' => enum_value(RolesEnum::USER)]);
+        $superAdminRole = Role::firstOrCreate(['name' => enum_value(RolesEnum::SUPER_ADMIN)]);
+        $userRole = Role::firstOrCreate(['name' => enum_value(RolesEnum::USER)]);
+
+        $permissions = [
+            // IP address management
+            'ip.view_any',
+            'ip.create',
+            'ip.update_own',
+            'ip.update_any',
+            'ip.delete_own',
+            'ip.delete_any',
+
+            // Audit logs
+            'audit_logs.view',
+        ];
+
+        foreach ($permissions as $permissionName) {
+            Permission::firstOrCreate(
+                ['name' => $permissionName, 'guard_name' => 'api'],
+                ['name' => $permissionName, 'guard_name' => 'api'],
+            );
+        }
+
+        $superAdminRole->syncPermissions([
+            'ip.view_any',
+            'ip.create',
+            'ip.update_own',
+            'ip.update_any',
+            'ip.delete_own',
+            'ip.delete_any',
+            'audit_logs.view',
+        ]);
+
+        $userRole->syncPermissions([
+            'ip.view_any',
+            'ip.create',
+            'ip.update_own',
+        ]);
     }
 }

@@ -5,6 +5,9 @@ namespace App\Policies;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use App\Models\IpAddress;
+use App\RolesEnum;
+
+use function Illuminate\Support\enum_value;
 
 class IpAddressPolicy
 {
@@ -22,7 +25,7 @@ class IpAddressPolicy
 
     public function create(User $user): bool
     {
-        return true;
+        return $user->hasRole(enum_value(RolesEnum::USER));
     }
 
     public function update(User $user, IpAddress $ipAddress): bool

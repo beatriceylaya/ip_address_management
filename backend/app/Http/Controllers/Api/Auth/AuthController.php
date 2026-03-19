@@ -25,7 +25,7 @@ class AuthController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        $user = User::find(Auth::id());
+        $user = User::with('roles')->find(Auth::id());
 
         // log activity
         activity('auth')
@@ -65,6 +65,8 @@ class AuthController extends Controller
 
     public function profile()
     {
-        return response()->json(Auth::user());
+        $user = User::with('roles')->findOrFail(Auth::id());
+
+        return response()->json($user);
     }
 }
