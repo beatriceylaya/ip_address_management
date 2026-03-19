@@ -1,9 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import LoginView from '@/views/auth/LoginView.vue'
-import AppLayout from '@/layouts/AppLayout.vue'
 import RegisterView from '@/views/auth/RegisterView.vue'
 import { useAuthStore } from '@/stores/auth'
-import IpAddressList from '@/views/IpAddressList.vue'
+import IpAddressPage from '@/views/IpAddressPage.vue'
+import AuditLogPage from '@/views/AuditLogPage.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -11,7 +11,7 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: AppLayout,
+      redirect: '/ip-addresses',
       meta: { requiresAuth: true }
     },
     {
@@ -28,8 +28,14 @@ const router = createRouter({
     },
     {
       path: '/ip-addresses',
-      name: 'ip address',
-      component: IpAddressList,
+      name: 'ip-addresses',
+      component: IpAddressPage,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/audit-logs',
+      name: 'audit-logs',
+      component: AuditLogPage,
       meta: { requiresAuth: true }
     }
   ],

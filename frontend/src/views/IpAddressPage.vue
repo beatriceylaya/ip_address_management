@@ -18,6 +18,16 @@ const {
   remove
 } = useIpAddresses()
 
+const isLoading = ref(false)
+const totalCount = ref(0)
+const tableColumns = [
+  { field: 'ip_address', header: 'IP Address', sortable: true },
+  { field: 'label', header: 'Label', sortable: true },
+  { field: 'user', header: 'Created By' },
+  { field: 'comment', header: 'Remarks' },
+  { field: 'created_at', header: 'Date Added', sortable: true },
+]
+
 const updateModalRef = ref<InstanceType<typeof IpAddressModal> | null>(null)
 const selectedIpAddress = ref<IpAddress | null>(null)
 
@@ -27,11 +37,19 @@ const openUpdateModal = (item: IpAddress) => {
 }
 
 onMounted(() => {
-  fetchAll()
+  loadIps()
 })
 
 const goToPage = (page: number) => {
   fetchAll(page)
+}
+
+const loadIps = async (page = 1, rows = 10) => {
+  fetchAll(page)
+}
+
+const handlePagination = (event: any ) => {
+  fetchAll(event.page + 1)
 }
 
 const handleCreate = async (payload: CreateIpAddressPayload) => {
@@ -45,7 +63,7 @@ const handleUpdate = async (payload: CreateIpAddressPayload) => {
   updateModalRef.value?.close()
 }
 
-const handleDelete = async(id: number) => {
+const confirmDelete = async(id: number) => {
   await remove(id)
 }
 </script>
@@ -62,59 +80,33 @@ const handleDelete = async(id: number) => {
     <DataTable
       title="Ip Addresses"
       :items="ipAddresses"
+      :columns="tableColumns"
+      :total-records="totalCount"
+      :loading="isLoading"
+      @page-change="handlePagination"
     >
-      <template #head>
-        <th class="px-6 py-3 text-left">IP Address</th>
-        <th class="px-6 py-3 text-left">Created By</th>
-        <th class="px-6 py-3 text-left">Created at</th>
-        <th class="px-6 py-3 text-left">Actions</th>
+      <template #ip_address="{ data }">
+        <span>{{ data.ip_address }}</span>
       </template>
 
-      <template #row="{ item }">
-        <td class="px-6 py-4">
-          {{ item.ip_address }}
-        </td>
+      <template #user="{ data }">
+        <span>{{ data.user?.name }}</span>
+      </template>
 
-        <td class="px-6 py-4">
-          {{ item.user?.name ?? item.created_by }}
-        </td>
-
-        <td class="px-6 py-4">
-          {{ item.created_at }}
-        </td>
-
-        <td class="px-6 py-4">
-          <Button
-            variant="secondary"
-            class="mr-2"
-            @click="openUpdateModal(item)"
-          >
-            Edit
-          </Button>
-          <Button variant="danger" @click="handleDelete">
-            Delete
-          </Button>
-        </td>
+      <template #actions="{ data }">
+        <Button 
+          icon="pi pi-pencil" 
+          label="Edit"
+          class="p-button-sm p-button-outlined p-button-warning" 
+          @click="openUpdateModal(data)" 
+        />
+        <Button 
+          icon="pi pi-trash" 
+          label="Delete"
+          class="p-button-sm p-button-outlined p-button-danger" 
+          @click="confirmDelete(data)" 
+        />
       </template>
     </DataTable>
-
-    <div class="flex gap-4 mt-4">
-      <button
-        :disabled="currentPage === 1"
-        @click="goToPage(currentPage - 1)"
-      >
-        Prev
-      </button>
-
-      <span>
-        Page {{ currentPage }} of {{ totalPages }}
-      </span>
-      <button
-        :disabled="currentPage === totalPages"
-        @click="goToPage(currentPage + 1)"
-      >
-        Next
-      </button>
-    </div>
   </AppLayout>
 </template>

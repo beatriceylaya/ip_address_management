@@ -1,35 +1,58 @@
-<script setup lang="ts" generic="T extends { id: number }">
-import Card from '@/components/common/BaseCard.vue'
-import Table from '@/components/common/BaseTable.vue'
+<script setup lang="ts" generic="T extends { id: number | string }">
+import DataTable from 'primevue/datatable'
+import Column from 'primevue/column'
+import Button from 'primevue/button'
 
-interface Props {
-  title: string
+defineProps<{
   items: T[]
-}
+  columns: { field: string; header: string }[]
+  totalRecords: number
+  loading: boolean
+}>()
 
-defineProps<Props>()
-
+defineEmits(['page-change', 'edit', 'delete'])
 </script>
 
 <template>
-  <Card>
-  
-    <template #header>
-      <h2 class="font-semibold">{{ title }}</h2>
-    </template>
-  
-    <Table>
-  
-      <template #head>
-        <slot name="head" />
+  <DataTable 
+    :value="items" 
+    lazy paginator :rows="10" 
+    :total-records="totalRecords"
+    :loading="loading"
+    @page="$emit('page-change', $event)"
+    responsive-layout="scroll"
+    showGridlines
+  >
+    <Column 
+      v-for="col in columns" 
+      :key="col.field" 
+      :field="col.field" 
+      :header="col.header"
+    >
+      <template #body="slotProps">
+        <slot :name="col.field" :data="slotProps.data">
+          {{ slotProps.data[col.field] }}
+        </slot>
       </template>
-  
-      <tr v-for="item in items" :key="item.id">
-        <slot name="row" :item="item"></slot>
-      </tr>
-  
-    </Table>
-  
-  </Card>
-  
+    </Column>
+
+    <Column header="Actions" style="min-width: 12rem" :exportable="false">
+      <template #body="slotProps">
+        <div class="flex gap-2">
+          <slot name="actions" :data="slotProps.data">
+            <Button 
+              icon="pi pi-pencil" 
+              class="p-button-text p-button-warning" 
+              @click="$emit('edit', slotProps.data)" 
+            />
+            <Button 
+              icon="pi pi-trash" 
+              class="p-button-text p-button-danger" 
+              @click="$emit('delete', slotProps.data)" 
+            />
+          </slot>
+        </div>
+      </template>
+    </Column>
+  </DataTable>
 </template>

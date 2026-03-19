@@ -17,7 +17,7 @@
       </RouterLink>
 
       <RouterLink
-        to="/users"
+        to="/audit-logs"
         class="block px-3 py-2 rounded hover:bg-gray-800"
       >
         Audit Logs

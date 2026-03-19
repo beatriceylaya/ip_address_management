@@ -1,7 +1,15 @@
+export type RoleName = 'user' | 'super_admin'
+
+export interface UserRole {
+  id: number
+  name: RoleName
+}
+
 export interface AuthUser {
   id: number
   name: string
   email: string
+  roles: UserRole[]
 }
 
 export interface LoginPayload {
