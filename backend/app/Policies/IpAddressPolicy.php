@@ -15,12 +15,12 @@ class IpAddressPolicy
 
     public function viewAny(User $user): bool
     {
-        return true;
+        return $user->hasRole(enum_value(RolesEnum::USER));
     }
 
     public function view(User $user, IpAddress $ipAddress): bool
     {
-        return $user->id === $ipAddress->user_id;
+        return $this->viewAny($user);
     }
 
     public function create(User $user): bool
