@@ -14,7 +14,8 @@ const {
   hasNextPage,
   fetchAll,
   create,
-  update
+  update,
+  remove
 } = useIpAddresses()
 
 const updateModalRef = ref<InstanceType<typeof IpAddressModal> | null>(null)
@@ -43,11 +44,15 @@ const handleUpdate = async (payload: CreateIpAddressPayload) => {
   await update(selectedIpAddress.value.id, updatePayload)
   updateModalRef.value?.close()
 }
+
+const handleDelete = async(id: number) => {
+  await remove(id)
+}
 </script>
 
 <template>
   <AppLayout>
-    <IpAddressModal @submit="handleCreate" />
+    <IpAddressModal @submit="handleCreate" class="mb-2"/>
     <IpAddressModal
       ref="updateModalRef"
       mode="update"
@@ -86,7 +91,7 @@ const handleUpdate = async (payload: CreateIpAddressPayload) => {
           >
             Edit
           </Button>
-          <Button variant="danger">
+          <Button variant="danger" @click="handleDelete">
             Delete
           </Button>
         </td>

@@ -14,5 +14,5 @@ export interface IpAddress {
   created_at: string
 }
 
-export type CreateIpAddressPayload = Omit<IpAddress, 'id' | 'user_id' | 'created_at'>
+export type CreateIpAddressPayload = Pick<IpAddress, 'ip_address' | 'label' | 'comment'>
 export type UpdateIpAddressPayload = Partial<CreateIpAddressPayload>

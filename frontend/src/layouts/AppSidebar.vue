@@ -10,6 +10,7 @@
 
       <RouterLink
         to="/ip-addresses"
+        active-class="text-blue-500 font-bold"
         class="block px-3 py-2 rounded hover:bg-gray-800"
       >
         IP Address

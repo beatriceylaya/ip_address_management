@@ -59,6 +59,7 @@ class AuthController extends Controller
         return response()->json([
             'access_token' => Auth::refresh(),
             'token_type' => 'bearer',
+            'expires_in' => now()->addMinutes(config('jwt.refresh_ttl')),
         ]);
     }
 
