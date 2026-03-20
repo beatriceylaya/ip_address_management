@@ -3,9 +3,10 @@ import { onMounted, ref } from 'vue'
 import { useIpAddresses } from '@/composables/useIpAddresses'
 import AppLayout from '@/layouts/AppLayout.vue'
 import DataTable from '@/components/common/BaseDataTable.vue'
-import Button from '@/components/common/BaseButton.vue'
+import Button from 'primevue/button'
 import IpAddressModal from '@/components/features/IpAddressModal.vue'
 import type { CreateIpAddressPayload, IpAddress, UpdateIpAddressPayload } from '@/types/ip-address'
+import dayjs from 'dayjs'
 
 const {
   ipAddresses,
@@ -59,6 +60,9 @@ const handleUpdate = async (payload: CreateIpAddressPayload) => {
 const confirmDelete = async(id: number) => {
   await remove(id)
 }
+
+const formatDate = (iso: string) =>
+  dayjs(new Date(iso)).format('YYYY-MM-DD')
 </script>
 
 <template>
@@ -84,6 +88,10 @@ const confirmDelete = async(id: number) => {
 
       <template #user="{ data }">
         <span>{{ data.user?.name }}</span>
+      </template>
+
+      <template #created_at="{ data }">
+        <span>{{ formatDate(data.created_at) }}</span>
       </template>
 
       <template #actions="{ data }">

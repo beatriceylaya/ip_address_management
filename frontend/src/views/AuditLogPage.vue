@@ -6,6 +6,7 @@ import Button from '@/components/common/BaseButton.vue'
 import type { AuditLog } from '@/types/audit-log'
 import { useAuditLogs } from '@/composables/useAuditLogs'
 import dayjs from 'dayjs'
+import AuditLogDetail from '@/components/features/AuditLogDetail.vue'
 
 const {
   auditLogs,
@@ -71,9 +72,7 @@ const handlePagination = (event: { page: number }) => {
     </template>
 
     <template #properties="{ data }">
-      <span class="text-xs font-mono text-gray-500 break-all">
-        {{ data }}
-      </span>
+      <AuditLogDetail :log="data" />
     </template>
 
     <template #actions>
