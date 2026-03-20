@@ -17,6 +17,7 @@
   "dependencies": {
     "@primeuix/themes": "^2.0.3",
     "axios": "^1.13.6",
+    "dayjs": "^1.11.20",
     "pinia": "^3.0.4",
     "pinia-plugin-persistedstate": "^4.7.1",
     "primeicons": "^7.0.0",

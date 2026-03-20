@@ -9,17 +9,14 @@ import type { CreateIpAddressPayload, IpAddress, UpdateIpAddressPayload } from '
 
 const {
   ipAddresses,
-  currentPage,
   totalPages,
-  hasNextPage,
+  loading,
   fetchAll,
   create,
   update,
   remove
 } = useIpAddresses()
 
-const isLoading = ref(false)
-const totalCount = ref(0)
 const tableColumns = [
   { field: 'ip_address', header: 'IP Address', sortable: true },
   { field: 'label', header: 'Label', sortable: true },
@@ -39,10 +36,6 @@ const openUpdateModal = (item: IpAddress) => {
 onMounted(() => {
   loadIps()
 })
-
-const goToPage = (page: number) => {
-  fetchAll(page)
-}
 
 const loadIps = async (page = 1, rows = 10) => {
   fetchAll(page)
@@ -81,8 +74,8 @@ const confirmDelete = async(id: number) => {
       title="Ip Addresses"
       :items="ipAddresses"
       :columns="tableColumns"
-      :total-records="totalCount"
-      :loading="isLoading"
+      :total-records="totalPages"
+      :loading="loading"
       @page-change="handlePagination"
     >
       <template #ip_address="{ data }">
@@ -104,7 +97,7 @@ const confirmDelete = async(id: number) => {
           icon="pi pi-trash" 
           label="Delete"
           class="p-button-sm p-button-outlined p-button-danger" 
-          @click="confirmDelete(data)" 
+          @click="confirmDelete(data.id)" 
         />
       </template>
     </DataTable>

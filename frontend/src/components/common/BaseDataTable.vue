@@ -3,12 +3,15 @@ import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import Button from 'primevue/button'
 
-defineProps<{
+withDefaults(defineProps<{
   items: T[]
   columns: { field: string; header: string }[]
   totalRecords: number
   loading: boolean
-}>()
+  showActions?: boolean
+}>(), {
+  showActions: true,
+})
 
 defineEmits(['page-change', 'edit', 'delete'])
 </script>
@@ -36,7 +39,12 @@ defineEmits(['page-change', 'edit', 'delete'])
       </template>
     </Column>
 
-    <Column header="Actions" style="min-width: 12rem" :exportable="false">
+    <Column
+      v-if="showActions"
+      header="Actions"
+      style="min-width: 12rem"
+      :exportable="false"
+    >
       <template #body="slotProps">
         <div class="flex gap-2">
           <slot name="actions" :data="slotProps.data">

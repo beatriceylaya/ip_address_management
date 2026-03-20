@@ -8,10 +8,7 @@ export function useIpAddresses() {
   const loading = ref(false)
   const saving = ref(false)
   const error = ref<string | null>(null)
-  const currentPage = ref(1)
   const totalPages = ref(1)
-
-  const hasNextPage = computed(() => currentPage.value < totalPages.value)
 
   async function fetchAll(page = 1) {
     loading.value = true
@@ -20,8 +17,7 @@ export function useIpAddresses() {
     try {
       const { data } = await ipAddressService.getAll(page)
       ipAddresses.value = data.data
-      currentPage.value = data.meta.current_page
-      totalPages.value = data.meta.last_page
+      totalPages.value = data.meta.total
     } catch {
       error.value = 'Failed to fetch ip addresses'
     } finally {
@@ -84,8 +80,15 @@ export function useIpAddresses() {
   }
 
   return {
-    ipAddresses, currentIpAddress, loading, error,
-    currentPage, totalPages, hasNextPage,
-    fetchAll, fetchOne, create, update, remove
+    ipAddresses,
+    currentIpAddress,
+    loading,
+    error,
+    totalPages,
+    fetchAll,
+    fetchOne,
+    create,
+    update,
+    remove
   }
 }
