@@ -15,7 +15,6 @@ const {
   ipAddresses,
   totalPages,
   loading,
-  error,
   fetchAll,
   create,
   update,
