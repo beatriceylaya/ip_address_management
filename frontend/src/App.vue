@@ -9,8 +9,8 @@ const authStore = useAuthStore()
 onMounted(async (): Promise<void> => {
   if (authStore.isAuthenticated) {
     try {
-      const { data } = await authService.profile()
-      authStore.setUser(data.user)
+      const { data: user } = await authService.profile()
+      authStore.setUser(user)
     } catch {
       //
     }
