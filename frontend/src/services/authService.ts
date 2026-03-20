@@ -14,5 +14,5 @@ export const authService = {
     }),
 
   profile: () =>
-    api.get<{user: AuthResponse['user'] }>('/auth/profile')
+    api.get<AuthResponse['user']>('/auth/profile')
 }
