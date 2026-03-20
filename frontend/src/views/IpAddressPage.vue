@@ -7,7 +7,10 @@ import Button from 'primevue/button'
 import IpAddressModal from '@/components/features/IpAddressModal.vue'
 import type { CreateIpAddressPayload, IpAddress, UpdateIpAddressPayload } from '@/types/ip-address'
 import dayjs from 'dayjs'
+import { useConfirm } from 'primevue'
+import ConfirmDialog from 'primevue/confirmdialog'
 
+const confirm = useConfirm()
 const {
   ipAddresses,
   totalPages,
@@ -57,8 +60,17 @@ const handleUpdate = async (payload: CreateIpAddressPayload) => {
   updateModalRef.value?.close()
 }
 
-const confirmDelete = async(id: number) => {
-  await remove(id)
+const confirmDelete = (id: number) => {
+  confirm.require({
+    message: 'Are you sure you want to delete this entry?',
+    header: 'Delete Confirmation',
+    icon: 'pi pi-exclamation-triangle',
+    acceptClass: '!bg-red-600 !border-red-600 !text-white hover:!bg-red-700',
+    rejectClass: '!bg-gray-200 !text-gray-700 !border-gray-300 hover:!bg-gray-300',
+    accept: async () => {
+      await remove(id)
+    },
+  })
 }
 
 const formatDate = (iso: string) =>
@@ -105,9 +117,11 @@ const formatDate = (iso: string) =>
           icon="pi pi-trash" 
           label="Delete"
           class="p-button-sm p-button-outlined p-button-danger" 
-          @click="confirmDelete(data.id)" 
+          @click="confirmDelete(data.id)"
         />
       </template>
     </DataTable>
+
+    <ConfirmDialog />
   </AppLayout>
 </template>
