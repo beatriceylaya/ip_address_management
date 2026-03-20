@@ -16,6 +16,15 @@ const form = reactive<IpAddressForm>({
   comment: ''
 })
 
+const fieldErrors = reactive<FieldErrors>({})
+const generalError = ref<string | null>(null)
+
+interface FieldErrors {
+  ip_address?: string
+  label?: string
+  comment?: string
+}
+
 interface Props {
   mode?: ModalMode
   hideTrigger?: boolean
@@ -27,10 +36,16 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const emit = defineEmits<{
-  (e: 'submit', payload: CreateIpAddressPayload): void
+  (
+    e: 'submit',
+    payload: CreateIpAddressPayload,
+    onSuccess: () => void,
+    onError: (err: unknown) => void
+  ): void
 }>()
 
 const showModal = ref(false)
+const isBusy = ref(false)
 
 const title = computed(() =>
   props.mode === 'update' ? 'Update IP Address' : 'Create IP Address'
@@ -46,13 +61,65 @@ function resetForm() {
   form.comment = ''
 }
 
+function clearErrors() {
+  delete fieldErrors.ip_address
+  delete fieldErrors.label
+  delete fieldErrors.comment
+  generalError.value = null
+}
+
+function applyErrors(err: unknown) {
+  clearErrors()
+
+  const data =
+    err &&
+    typeof err === 'object' &&
+    'response' in err &&
+    err.response &&
+    typeof err.response === 'object' &&
+    'data' in err.response
+      ? (err.response as { data: unknown }).data
+      : err
+
+  if (!data || typeof data !== 'object') {
+    generalError.value = 'An unexpected error occurred. Please try again.'
+    return
+  }
+
+  const e = data as { errors?: Record<string, string[]>; message?: string }
+  const formKeys = Object.keys(form) as (keyof FieldErrors)[]
+
+  if (e.errors && typeof e.errors === 'object') {
+    const unknownMessages: string[] = []
+
+    for (const [key, messages] of Object.entries(e.errors)) {
+      const firstMessage = messages[0]
+      if (formKeys.includes(key as keyof FieldErrors)) {
+        if (firstMessage !== undefined) fieldErrors[key as keyof FieldErrors] = firstMessage
+      } else {
+        if (firstMessage !== undefined) unknownMessages.push(firstMessage)
+      }
+    }
+
+    if (unknownMessages.length) {
+      generalError.value = unknownMessages.join(' ')
+    }
+
+    return
+  }
+
+  generalError.value = e.message ?? 'An unexpected error occurred. Please try again.'
+}
+
 function applyIpAddressToForm(item: IpAddress) {
   form.ip_address = item.ip_address ?? ''
   form.label = item.label ?? ''
   form.comment = item.comment ?? ''
 }
 
+// Modal
 function open(item?: IpAddress) {
+  clearErrors()
   if (props.mode === 'update' && item) {
     applyIpAddressToForm(item)
   } else if (props.mode === 'create') {
@@ -62,6 +129,8 @@ function open(item?: IpAddress) {
 }
 
 function close () {
+  if (isBusy.value) return
+  clearErrors()
   showModal.value = false
 }
 
@@ -71,11 +140,25 @@ defineExpose({
 })
 
 function submit() {
-  emit('submit', {
-    ip_address: form.ip_address,
-    label: form.label,
-    comment: form.comment
-  })
+  clearErrors()
+  isBusy.value = true
+
+  emit(
+    'submit',
+    {
+      ip_address: form.ip_address,
+      label: form.label,
+      comment: form.comment,
+    },
+    () => {
+      isBusy.value = false
+      close()
+    },
+    (err: unknown) => {
+      isBusy.value = false
+      applyErrors(err)
+    }
+  )
 }
 </script>
 
@@ -94,15 +177,15 @@ function submit() {
     >
       <template #default>
         <form id="ip-address-form" class="space-y-4" @submit.prevent="submit">
-          <FormGroup label="IP Address">
+          <FormGroup label="IP Address" :error="fieldErrors.ip_address">
             <BaseInput v-model="form.ip_address" placeholder="e.g. 10.0.0.15" required />
           </FormGroup>
 
-          <FormGroup label="Label">
+          <FormGroup label="Label" :error="fieldErrors.label">
             <BaseInput v-model="form.label" placeholder="e.g. VPN gateway" />
           </FormGroup>
 
-          <FormGroup label="Comment">
+          <FormGroup label="Comment" :error="fieldErrors.comment">
             <textarea
               v-model="form.comment"
               rows="3"
@@ -110,16 +193,23 @@ function submit() {
               placeholder="Optional notes..."
             />
           </FormGroup>
+
+          <p
+            v-if="generalError"
+            class="text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2"
+          >
+            {{ generalError }}
+          </p>
         </form>
       </template>
 
       <template #footer>
-        <BaseButton variant="secondary" @click="close">
+        <BaseButton variant="secondary" @click="close" :disabled="isBusy">
           Cancel
         </BaseButton>
 
-        <BaseButton type="submit" form="ip-address-form">
-          {{ primaryLabel }}
+        <BaseButton type="submit" form="ip-address-form" :disabled="isBusy" :loading="isBusy">
+          {{ isBusy ? 'Saving... ' : primaryLabel }}
         </BaseButton>
       </template>
     </BaseModal>

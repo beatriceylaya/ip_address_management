@@ -15,6 +15,7 @@ const {
   ipAddresses,
   totalPages,
   loading,
+  error,
   fetchAll,
   create,
   update,
@@ -49,15 +50,31 @@ const handlePagination = (event: any ) => {
   fetchAll(event.page + 1)
 }
 
-const handleCreate = async (payload: CreateIpAddressPayload) => {
-  await create(payload)
+const handleCreate = async (
+  payload: CreateIpAddressPayload,
+  onSuccess: () => void,
+  onError: (err: unknown) => void
+) => {
+  try {
+    await create(payload)
+    onSuccess()
+  } catch (err) {
+    onError(err)
+  }
 }
 
-const handleUpdate = async (payload: CreateIpAddressPayload) => {
+const handleUpdate = async (
+  payload: CreateIpAddressPayload,
+  onSuccess: () => void,
+  onError: (err: unknown) => void
+) => {
   if (!selectedIpAddress.value) return
-  const updatePayload: UpdateIpAddressPayload = payload
-  await update(selectedIpAddress.value.id, updatePayload)
-  updateModalRef.value?.close()
+  try {
+    await update(selectedIpAddress.value.id, payload)
+    onSuccess()
+  } catch (err) {
+    onError(err)
+  }
 }
 
 const confirmDelete = (id: number) => {
