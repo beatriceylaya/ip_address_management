@@ -9,6 +9,20 @@ import type { CreateIpAddressPayload, IpAddress, UpdateIpAddressPayload } from '
 import dayjs from 'dayjs'
 import { useConfirm } from 'primevue'
 import ConfirmDialog from 'primevue/confirmdialog'
+import { useAbility } from '@/composables/useAbility'
+import { useAuthStore } from '@/stores/auth'
+
+const { canUpdateAnyIp, canDeleteAnyIp } = useAbility()
+const auth = useAuthStore()
+
+const canEditIp = (ownerId: number) =>
+  canUpdateAnyIp.value ||
+  (auth.hasPermission('ip.update_own') && ownerId === auth.user?.id)
+
+
+const canDeleteIp = (ownerId: number) =>
+  canDeleteAnyIp.value ||
+  (auth.hasPermission('ip.delete_own') && ownerId === auth.user?.id)
 
 const confirm = useConfirm()
 const {
@@ -126,13 +140,15 @@ const formatDate = (iso: string) =>
         <Button 
           icon="pi pi-pencil" 
           label="Edit"
-          class="p-button-sm p-button-outlined p-button-warning" 
+          class="p-button-sm p-button-outlined p-button-warning"
+          :disabled="!canEditIp(data.user_id)"
           @click="openUpdateModal(data)" 
         />
         <Button 
           icon="pi pi-trash" 
           label="Delete"
-          class="p-button-sm p-button-outlined p-button-danger" 
+          class="p-button-sm p-button-outlined p-button-danger"
+          :disabled="!canDeleteIp(data.user_id)"
           @click="confirmDelete(data.id)"
         />
       </template>
