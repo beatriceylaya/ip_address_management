@@ -4,6 +4,15 @@ import RegisterView from '@/views/auth/RegisterView.vue'
 import { useAuthStore } from '@/stores/auth'
 import IpAddressPage from '@/views/IpAddressPage.vue'
 import AuditLogPage from '@/views/AuditLogPage.vue'
+import type { RoleName  } from '@/types/auth'
+
+declare module 'vue-router' {
+  interface RouteMeta {
+    requiresAuth?: boolean
+    guest?: boolean
+    roles?: RoleName[]
+  }
+}
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -36,7 +45,10 @@ const router = createRouter({
       path: '/audit-logs',
       name: 'audit-logs',
       component: AuditLogPage,
-      meta: { requiresAuth: true }
+      meta: {
+        requiresAuth: true,
+        roles: ['super_admin']
+      }
     }
   ],
 }) 
@@ -45,12 +57,14 @@ router.beforeEach((to, from, next) => {
   const auth = useAuthStore()
 
   if (to.meta.requiresAuth && !auth.isAuthenticated) {
-    next('/login')
-  } else if (to.meta.guest && auth.isAuthenticated) {
-    next('/')
-  } else {
-    next()
+    return next('/login')
   }
+
+  if (to.meta.roles && !to.meta.roles.some(r => auth.hasRole(r))) {
+    return next('/')
+  }
+
+  next()
 })
 
 export default router

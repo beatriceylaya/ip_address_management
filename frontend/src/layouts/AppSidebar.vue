@@ -1,4 +1,8 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { useAbility } from '@/composables/useAbility'
+
+const { isSuperAdmin } = useAbility()
+</script>
 <template>
   <aside class="w-64 bg-gray-900 text-white min-h-screen">
 
@@ -17,6 +21,7 @@
       </RouterLink>
 
       <RouterLink
+        v-if="isSuperAdmin"
         to="/audit-logs"
         active-class="text-blue-500 font-bold"
         class="block px-3 py-2 rounded hover:bg-gray-800"

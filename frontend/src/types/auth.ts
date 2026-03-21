@@ -1,8 +1,14 @@
 export type RoleName = 'user' | 'super_admin'
 
+export interface Permission {
+  id: number
+  name: string
+  guard_name: string
+}
 export interface UserRole {
   id: number
   name: RoleName
+  permissions?: Permission[]
 }
 
 export interface AuthUser {

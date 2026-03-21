@@ -8,6 +8,7 @@ import Aura from '@primeuix/themes/aura'
 import { ConfirmationService } from 'primevue'
 import App from './App.vue'
 import router from './router'
+import { vCan } from './directives/can'
 
 const app = createApp(App)
 
@@ -24,5 +25,6 @@ app.use(PrimeVue, {
     }
   }
 })
+app.directive('can', vCan)
 
 app.mount('#app')
