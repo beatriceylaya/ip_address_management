@@ -2,10 +2,10 @@
 
 namespace App\Policies;
 
-use App\Models\User;
-use Illuminate\Auth\Access\HandlesAuthorization;
 use App\Models\IpAddress;
+use App\Models\User;
 use App\RolesEnum;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 use function Illuminate\Support\enum_value;
 

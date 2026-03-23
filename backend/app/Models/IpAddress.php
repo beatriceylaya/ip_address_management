@@ -15,7 +15,7 @@ class IpAddress extends Model
     protected $fillable = [
         'ip_address',
         'label',
-        'comment'
+        'comment',
     ];
 
     public function user(): BelongsTo

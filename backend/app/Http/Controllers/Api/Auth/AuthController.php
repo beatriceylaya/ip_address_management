@@ -7,9 +7,7 @@ use App\Http\Requests\Auth\LoginUserRequest;
 use App\Models\Audit;
 use App\Models\User;
 use App\ResolvesJti;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use PHPOpenSourceSaver\JWTAuth\JWTAuth;
 
 class AuthController extends Controller
 {
@@ -26,7 +24,7 @@ class AuthController extends Controller
 
         $token = Auth::attempt($credentials);
 
-        if (!$token) {
+        if (! $token) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
@@ -39,7 +37,7 @@ class AuthController extends Controller
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => now()->addMinutes(config('jwt.ttl')),
-            'user' => $user
+            'user' => $user,
         ]);
     }
 
@@ -50,6 +48,7 @@ class AuthController extends Controller
         $this->logActivity($user, 'logout', 'logged_out');
 
         Auth::logout();
+
         return response()->json(['message' => 'Successfully logged out']);
     }
 
@@ -81,5 +80,4 @@ class AuthController extends Controller
             })
             ->log($description);
     }
-
 }

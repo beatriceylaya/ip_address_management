@@ -2,15 +2,15 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
-
-use Illuminate\Support\Str;
-use function Laravel\Prompts\text;
-use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\RolesEnum;
+use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+
 use function Illuminate\Support\enum_value;
 use function Laravel\Prompts\table;
+use function Laravel\Prompts\text;
 
 class CreateNewSuperAdmin extends Command
 {
@@ -74,7 +74,7 @@ class CreateNewSuperAdmin extends Command
     {
         return User::updateOrCreate(['email' => $email], [
             'name' => $name,
-            'password' => Hash::make($password)
+            'password' => Hash::make($password),
         ]);
     }
 }

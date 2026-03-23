@@ -18,7 +18,9 @@ class IpAddressController extends Controller
     {
         $perPage = $request->input('per_page', 10);
 
-        $ipAddresses = IpAddress::with(['user:id,name'])
+        $ipAddresses = IpAddress::query()
+            ->with(['user:id,name'])
+            ->latest()
             ->paginate($perPage);
 
         return IpAddressResource::collection($ipAddresses);
@@ -33,7 +35,7 @@ class IpAddressController extends Controller
             ->ipAddresses()
             ->create($request->validated());
 
-        return response()->json($ipAddress, 201);
+        return new IpAddressResource($ipAddress);
     }
 
     /**
@@ -41,18 +43,23 @@ class IpAddressController extends Controller
      */
     public function show(IpAddress $ipAddress)
     {
-        return response()->json($ipAddress);
+        $this->authorize('view', $ipAddress);
+
+        return new IpAddressResource(
+            $ipAddress->load('user:id,name')
+        );
     }
 
-    /** 
+    /**
      * Update the specified resource in storage.
      */
     public function update(UpdateIpRequest $request, IpAddress $ipAddress)
     {
         $this->authorize('update', $ipAddress);
+
         $ipAddress->update($request->validated());
 
-        return response()->json($ipAddress, 200);
+        return new IpAddressResource($ipAddress);
     }
 
     /**
@@ -61,6 +68,7 @@ class IpAddressController extends Controller
     public function destroy(IpAddress $ipAddress)
     {
         $this->authorize('delete', $ipAddress);
+
         $ipAddress->delete();
 
         return response()->json(null, 204);
