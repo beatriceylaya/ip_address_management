@@ -39,11 +39,11 @@ async function submit() {
         <form class="space-y-4" @submit.prevent="submit">
 
           <FormGroup label="Email">
-            <Input v-model="form.email" type="email" />
+            <Input v-model="form.email" type="email" required/>
           </FormGroup>
 
           <FormGroup label="Password">
-            <Input v-model="form.password" type="password" />
+            <Input v-model="form.password" type="password" required/>
           </FormGroup>
 
           <p v-if="error" class="error">{{ error }}</p>
