@@ -7,7 +7,7 @@ const { isSuperAdmin } = useAbility()
   <aside class="w-64 bg-gray-900 text-white min-h-screen">
 
     <div class="p-4 text-lg font-semibold border-b border-gray-700">
-      Beatrice App
+      IP Manager
     </div>
 
     <nav class="p-4 space-y-2">

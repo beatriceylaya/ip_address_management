@@ -16,13 +16,9 @@ async function submit() {
 
 <template>
 
-  <header class="bg-white border-b px-6 py-4 flex items-center justify-between">
+  <header class="bg-white border-b px-6 py-4 flex items-center">
 
-    <h1 class="text-lg font-semibold">
-      Dashboard
-    </h1>
-
-    <div class="flex items-center gap-4">
+    <div class="flex items-center gap-4 ml-auto">
 
       <span class="text-sm text-gray-600">
         {{ name }}

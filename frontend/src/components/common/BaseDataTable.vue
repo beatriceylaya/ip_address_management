@@ -19,7 +19,9 @@ defineEmits(['page-change', 'edit', 'delete'])
 <template>
   <DataTable 
     :value="items" 
-    lazy paginator :rows="10" 
+    lazy
+    paginator
+    :rows="15"
     :total-records="totalRecords"
     :loading="loading"
     @page="$emit('page-change', $event)"

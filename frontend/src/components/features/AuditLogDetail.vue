@@ -42,7 +42,7 @@ const summaryAttrs = computed(() => {
     : (props.log.properties?.attributes ?? {})
 
   return Object.entries(source)
-    .filter(([k]) => ['ip_address', 'label'].includes(k))
+    .filter(([k]) => ['ip_address', 'label', 'comment'].includes(k))
     .map(([k, v]) => ({ label: fieldLabel(k), value: String(v) }))
 })
 </script>

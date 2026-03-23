@@ -5,7 +5,7 @@ import AppLayout from '@/layouts/AppLayout.vue'
 import DataTable from '@/components/common/BaseDataTable.vue'
 import Button from 'primevue/button'
 import IpAddressModal from '@/components/features/IpAddressModal.vue'
-import type { CreateIpAddressPayload, IpAddress, UpdateIpAddressPayload } from '@/types/ip-address'
+import type { CreateIpAddressPayload, IpAddress } from '@/types/ip-address'
 import dayjs from 'dayjs'
 import { useConfirm } from 'primevue'
 import ConfirmDialog from 'primevue/confirmdialog'
@@ -38,8 +38,8 @@ const {
 const tableColumns = [
   { field: 'ip_address', header: 'IP Address', sortable: true },
   { field: 'label', header: 'Label', sortable: true },
+  { field: 'comment', header: 'Comment' },
   { field: 'user', header: 'Created By' },
-  { field: 'comment', header: 'Remarks' },
   { field: 'created_at', header: 'Date Added', sortable: true },
 ]
 
@@ -51,15 +51,7 @@ const openUpdateModal = (item: IpAddress) => {
   updateModalRef.value?.open(item)
 }
 
-onMounted(() => {
-  loadIps()
-})
-
-const loadIps = async (page = 1, rows = 10) => {
-  fetchAll(page)
-}
-
-const handlePagination = (event: any ) => {
+const handlePagination = (event: { page: number } ) => {
   fetchAll(event.page + 1)
 }
 
@@ -105,11 +97,25 @@ const confirmDelete = (id: number) => {
 
 const formatDate = (iso: string) =>
   dayjs(new Date(iso)).format('YYYY-MM-DD')
+
+onMounted(() => {
+  fetchAll()
+})
 </script>
 
 <template>
   <AppLayout>
-    <IpAddressModal @submit="handleCreate" class="mb-2"/>
+    <div class="space-y-4 mb-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-xl font-semibold">IP Addresses</h1>
+          <p class="text-sm text-gray-500">Manage and track all registered IP addresses</p>
+        </div>
+
+        <IpAddressModal @submit="handleCreate" class="mb-2"/>
+      </div>
+    </div>
+    
     <IpAddressModal
       ref="updateModalRef"
       mode="update"
