@@ -123,6 +123,7 @@ onMounted(() => {
             <template #option="{ option }">
               <div>
                 <p class="text-sm font-mono leading-tight">{{ option.ip_address }}</p>
+                <p class="text-xs text-gray-400 leading-tight">by {{ option.user.name }}</p>
               </div>
             </template>
           </Select>
