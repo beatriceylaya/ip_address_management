@@ -4,12 +4,17 @@ namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginUserRequest;
+use App\Models\Audit;
 use App\Models\User;
+use App\ResolvesJti;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use PHPOpenSourceSaver\JWTAuth\JWTAuth;
 
 class AuthController extends Controller
 {
+    use ResolvesJti;
+
     public function __construct()
     {
         $this->middleware('auth:api', ['except' => ['login']]);
@@ -28,10 +33,7 @@ class AuthController extends Controller
         $user = User::with(['roles.permissions'])->find(Auth::id());
 
         // log activity
-        activity('auth')
-            ->performedOn($user)
-            ->causedBy($user)
-            ->log('logged_in');
+        $this->logActivity($user, 'login', 'logged_in');
 
         return response()->json([
             'access_token' => $token,
@@ -45,10 +47,7 @@ class AuthController extends Controller
     {
         $user = User::findOrFail(Auth::id());
         // log activity
-        activity('auth')
-            ->performedOn($user)
-            ->causedBy($user)
-            ->log('logged_out');
+        $this->logActivity($user, 'logout', 'logged_out');
 
         Auth::logout();
         return response()->json(['message' => 'Successfully logged out']);
@@ -69,4 +68,18 @@ class AuthController extends Controller
 
         return response()->json($user);
     }
+
+    private function logActivity(User $user, string $event, string $description): void
+    {
+        activity('auth')
+            ->performedOn($user)
+            ->causedBy($user)
+            ->event($event)
+            ->tap(function (Audit $audit) {
+                $audit->ip_address = request()->ip();
+                $audit->session_id = $this->resolveJti();
+            })
+            ->log($description);
+    }
+
 }
