@@ -47,10 +47,20 @@ class UserFactory extends Factory
         ]);
     }
 
+    public function syncRolesToUser(User $user, RolesEnum ...$roleEnums): void
+    {
+        $roles = [];
+
+        foreach ($roleEnums as $roleEnum) {
+            $roles[] = Role::firstOrCreate(['name' => enum_value($roleEnum)]);
+        }
+
+        $user->syncRoles($roles);
+    }
+
     protected function assignRoleToUser(User $user, RolesEnum $roleEnum): void
     {
-        $role = Role::firstOrCreate(['name' => enum_value($roleEnum)]);
-        $user->syncRoles([$role]);
+        $this->syncRolesToUser($user, $roleEnum);
     }
 
     public function configure(): static

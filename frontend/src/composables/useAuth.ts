@@ -19,7 +19,7 @@ export function useAuth() {
       store.setTokens(data.access_token, data.refresh_token)
       store.setUser(data.user)
       await router.push('/')
-    } catch (error: unknown) {
+    } catch (error: any) {
       error.value = error.response?.data?.message ?? 'Login failed'
     } finally {
       loading.value = false
