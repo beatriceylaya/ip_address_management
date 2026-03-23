@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreIpRequest extends FormRequest
 {
@@ -22,7 +23,14 @@ class StoreIpRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'ip_address' => 'required|ip',
+            'ip_address' => [
+                'required',
+                'ip',
+                Rule::unique('ip_addresses', 'ip_address')
+                    ->where(function ($query) {
+                        $query->where('user_id', auth()->id());
+                    }),
+            ],
             'label' => 'required|string|max:255',
             'comment' => 'nullable|string|max:255',
         ];
