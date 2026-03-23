@@ -1,5 +1,5 @@
 import api from "@/api/axios";
-import type { AuthResponse, LoginPayload, TokenResponse } from "@/types/auth";
+import type { AuthResponse, LoginPayload, RegisterPayload, TokenResponse } from "@/types/auth";
 
 export const authService = {
   login: (payload: LoginPayload) => 
@@ -14,5 +14,8 @@ export const authService = {
     }),
 
   profile: () =>
-    api.get<AuthResponse['user']>('/auth/profile')
+    api.get<AuthResponse['user']>('/auth/profile'),
+
+  register: (payload: RegisterPayload) => 
+    api.post<AuthResponse>('/auth/register', payload),
 }

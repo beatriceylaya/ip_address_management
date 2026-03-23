@@ -7,6 +7,7 @@ import AuthLayout from '@/layouts/AuthLayout.vue'
 import PageContainer from '@/layouts/PageContainer.vue'
 import Button from '@/components/common/BaseButton.vue'
 import { RouterLink } from 'vue-router'
+import { useAuth } from '@/composables/useAuth'
 
 interface RegisterForm {
   name: string
@@ -20,8 +21,10 @@ const form = reactive<RegisterForm>({
   password: ''
 })
 
+const { register, error, loading } = useAuth()
+
 async function submit () {
-  //
+  await register(form)
 }
 </script>
 
@@ -46,8 +49,9 @@ async function submit () {
             <Input v-model="form.password" type="password" />
           </FormGroup>
 
+          <p v-if="error" class="error">{{ error }}</p>
           <Button type="submit" class="w-full">
-            Register
+            {{ loading ? 'Registering...' : 'Register' }}
           </Button>
 
           <p>

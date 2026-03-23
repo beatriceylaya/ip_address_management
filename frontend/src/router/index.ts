@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import LoginView from '@/views/auth/LoginView.vue'
-import RegisterView from '@/views/auth/RegisterView.vue'
+import LoginPage from '@/views/auth/LoginPage.vue'
+import RegisterPage from '@/views/auth/RegisterPage.vue'
 import { useAuthStore } from '@/stores/auth'
 import IpAddressPage from '@/views/IpAddressPage.vue'
 import AuditLogPage from '@/views/AuditLogPage.vue'
@@ -26,13 +26,13 @@ const router = createRouter({
     {
       path: '/login',
       name: 'login',
-      component: LoginView,
+      component: LoginPage,
       meta: { guest: true }
     },
     {
       path: '/register',
       name: 'register',
-      component: RegisterView,
+      component: RegisterPage,
       meta: { guest: true }
     },
     {
@@ -58,6 +58,10 @@ router.beforeEach((to, from, next) => {
 
   if (to.meta.requiresAuth && !auth.isAuthenticated) {
     return next('/login')
+  }
+
+  if (!to.meta.requiresAuth && auth.isAuthenticated) {
+    return next('/')
   }
 
   if (to.meta.roles && !to.meta.roles.some(r => auth.hasRole(r))) {

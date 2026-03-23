@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { authService } from '@/services/authService'
-import type { LoginPayload } from '@/types/auth'
+import type { LoginPayload, RegisterPayload } from '@/types/auth'
 import router from '@/router'
 
 export function useAuth() {
@@ -35,9 +35,25 @@ export function useAuth() {
     }
   }
 
+  async function register(payload: RegisterPayload) {
+    loading.value = true
+    error.value = null
+    try {
+      const { data } = await authService.register(payload)
+      store.setTokens(data.access_token, data.refresh_token)
+      store.setUser(data.user)
+      await router.push('/')
+    } catch (error: any) {
+      error.value = error.response?.data?.message ?? 'Login failed'
+    } finally {
+      loading.value = false
+    }
+  }
+
   return {
     login,
     logout,
+    register,
     loading,
     error,
     user: store.user,

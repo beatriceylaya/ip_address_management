@@ -24,8 +24,10 @@ class RegisterController extends Controller
         $token = Auth::login($user);
 
         return response()->json([
-            'message' => 'User registered successfully',
-            'token' => $token,
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => now()->addMinutes(config('jwt.ttl')),
+            'user' => $user,
         ]);
     }
 }
