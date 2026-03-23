@@ -1,6 +1,6 @@
 # IP Address Management Project
 
-This project is a full-stack application designed to manage IP addresses, featuring a Laravel backend, a Vue.js frontend, and a MySQL database, all containerized using Docker.
+This project is a full-stack application designed to manage IP addresses, featuring a Laravel backend, a Vue.js frontend, and a MySQL database, all containerized using Docker. This also includes audit logging system for tracking IP lifecycle and user activity (login/logout).
 
 ---
 ### Project Architecture
